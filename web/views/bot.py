@@ -23,8 +23,8 @@ class CreateBotView(FormView):
 
     def get_context_data(self, **kwargs):
         context = super(CreateBotView, self).get_context_data(**kwargs)
-        context["title"] = "Создать бота"
-        context["submit_btn"] = "Создать"
+        context["title"] = "创建机器人"
+        context["submit_btn"] = "创建"
         context.update(site.each_context(self.request))
         return context
 
@@ -36,7 +36,7 @@ class CreateBotView(FormView):
         if not User.objects.filter(username=username).exists():
             bot = User(username=username, type="bot")
             bot.save()
-            messages.success(self.request, "Бот успешно создан")
+            messages.success(self.request, "机器人创建成功")
         else:
-            messages.error(self.request, "Имя пользователя занято")
+            messages.error(self.request, "用户名已被占用")
         return redirect(self.get_success_url())
