@@ -30,7 +30,7 @@ class LoginView(TemplateResponseMixin, ContextMixin, View):
             login(request, user)
             return HttpResponseRedirect(redirect_to=to)
         else:
-            context.update({'error': 'Неверное имя пользователя или пароль. Пожалуйста, попробуйте снова.'})
+            context.update({'error': '用户名或密码错误，请重试。'})
             return self.render_to_response(context)
 
 
