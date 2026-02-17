@@ -16,10 +16,10 @@ class LocalCodeView(View):
     def get(self, request: HttpRequest, page_id: str, index: int, *args, **kwargs):
         article = articles.get_article(page_id)
         if not article:
-            return HttpResponseNotFound('Article not found')
+            return HttpResponseNotFound('未找到文章')
 
         if not request.user.has_perm('roles.view_articles', article):
-            return HttpResponseForbidden('Permission denied')
+            return HttpResponseForbidden('权限不足')
 
         rev_num = request.GET.get('revNum')
         if rev_num is not None:
@@ -65,10 +65,10 @@ class LocalHTMLView(View):
 
         article = articles.get_article(page_id)
         if not article:
-            return HttpResponseNotFound('Article not found')
+            return HttpResponseNotFound('未找到文章')
 
         if not request.user.has_perm('roles.view_articles', article):
-            return HttpResponseForbidden('Permission denied')
+            return HttpResponseForbidden('权限不足')
 
         rev_num = request.GET.get('revNum')
         if rev_num is not None:
@@ -88,7 +88,7 @@ class LocalHTMLView(View):
         requested_hash, requested_id = hash_and_id.split('-', 1)
 
         if requested_hash not in html_by_hash:
-            return HttpResponseNotFound('HTML block not found')
+            return HttpResponseNotFound('未找到HTML块')
 
         prepend_code = get_html_injected_code(requested_id)
 
@@ -108,10 +108,10 @@ class LocalThemeView(View):
     def get(self, request: HttpRequest, page_id: str, *args, **kwargs):
         article = articles.get_article(page_id)
         if not article:
-            return HttpResponseNotFound('Article not found')
+            return HttpResponseNotFound('未找到文章')
 
         if not request.user.has_perm('roles.view_articles', article):
-            return HttpResponseForbidden('Permission denied')
+            return HttpResponseForbidden('权限不足')
 
         rev_num = request.GET.get('revNum')
         if rev_num is not None:
