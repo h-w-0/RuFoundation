@@ -46,12 +46,12 @@ class InviteView(FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["title"] = "Пригласить пользователя"
-        context["submit_btn"] = "Отправить"
+        context["title"] = "邀请用户"
+        context["submit_btn"] = "发送"
         user = self.get_user()
         if user:
-            context["title"] = "Активировать пользователя wd:%s" % user.wikidot_username
-            context["submit_btn"] = "Активировать"
+            context["title"] = "激活用户 wd:%s" % user.wikidot_username
+            context["submit_btn"] = "激活"
         context.update(site.each_context(self.request))
         return context
 
@@ -76,7 +76,7 @@ class InviteView(FormView):
             user.username = 'user-%d' % user.id
             user.email = email
             user.save()
-            subject = f"Приглашение на {site.title}"
+            subject = f"邀请访问 {site.title}"
             c = {
                 "email": user.email,
                 'domain': self.request.get_host(),
@@ -89,10 +89,10 @@ class InviteView(FormView):
             content = render_to_string(self.email_template_name, c)
             try:
                 send_mail(subject, content, None, [user.email], fail_silently=False)
-                messages.success(self.request, "Приглашение успешно отправлено")
+                messages.success(self.request, "邀请已成功发送")
             except BadHeaderError:
-                messages.error(self.request, "Неправильный заголовок")
+                messages.error(self.request, "错误的标题")
         else:
-            messages.error(self.request, "Данный email уже привязан к участнику сайта")
+            messages.error(self.request, "该电子邮件已绑定至网站用户")
 
         return redirect(self.get_success_url())
