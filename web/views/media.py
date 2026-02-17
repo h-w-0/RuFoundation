@@ -50,9 +50,9 @@ class MediaView(View):
         content_length = 0
 
         if not dir_path.startswith('-/'):
-            # 需检查目录路径是否不存在。若不存在，则查找可能的文件重映射（name->media_name）
-            # 这部分逻辑后续需以某种方式调整。
-            # 当前配置支持从同一路径同时提供 UUID 重映射的文件以及头像等文件的访问服务
+            # we need to check if dir path does not exist. if it doesn't, look for possible file remap (name->media_name)
+            # to be changed later somehow.
+            # the current setup allows serving both UUID-remapped files and avatars/etc from the same path
             document_root /= 'media'
 
             if len(dir_path_split) == 2:
@@ -71,7 +71,7 @@ class MediaView(View):
         full_path = document_root / dir_path
 
         if not full_path.exists():
-            return HttpResponseNotFound('未找到')
+            return HttpResponseNotFound('Not found')
 
         stat = full_path.stat()
 
@@ -99,9 +99,9 @@ class MediaView(View):
         
         response['Last-Modified'] = http_date(stat.st_mtime)
         response['Content-Length'] = content_length
-        response['Access-Control-Expose-Headers'] = '内容长度，内容范围'
-        response['Content-Disposition'] = '行内'
-        response['Accept-Ranges'] = '比特'
+        response['Access-Control-Expose-Headers'] = 'Content-Length, Content-Range'
+        response['Content-Disposition'] = 'inline'
+        response['Accept-Ranges'] = 'bytes'
 
         begin, end = 0, min(chunk_size, content_length)
         if range:
@@ -128,4 +128,3 @@ class MediaView(View):
             response.status_code = 416
         
         return response
-
